@@ -3,7 +3,7 @@
 
 local Core = {}
 
-Core.VERSION = "0.1.0"
+Core.VERSION = "0.1.1"
 
 -- Shared Unreal Engine UMG enum constants (replaces magic integer literals across features)
 Core.VIS = {
@@ -48,6 +48,8 @@ Core.Config = {}
 local RegisteredHookAddresses = {}
 local Features = {}
 local WatchedWidgetClasses = {}
+local RegisteredKeybinds = {}
+local TrackedTextInputs = {}
 
 function Core.Log(msg)
     print(string.format("[StationMap] %s\n", tostring(msg)))
@@ -677,7 +679,7 @@ function Core.EnsureAllHooks()
     end
 end
 
-local TrackedTextInputs = {} -- widgetAddr -> { Input = widget, Owner = ownerWindowOrNil, ExplicitFocus = bool }
+-- TrackedTextInputs forward-declared at top
 local TextInputFocusWatcherActive = false
 local SuppressedCharacterInput = false
 local SuppressedCharacterInputPC = nil
@@ -950,7 +952,7 @@ function Core.IsAnyTextInputFocused()
 end
 
 local ButtonClickCallbacks = {} -- btnAddr -> { btn = btn, fn = fn }
-local RegisteredKeybinds = {}   -- mappingName -> bindingState
+-- RegisteredKeybinds forward-declared at top
 
 function Core.PruneAllCaches()
     CachedLocalPC = nil
