@@ -1,0 +1,114 @@
+name: Automated Release
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: release-main
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract mod version from Scripts/core.lua
+        id: version
+        run: |
+          VERSION=$(grep -oP 'Core\.VERSION\s*=\s*"\K[^"]+' Scripts/core.lua | head -n 1)
+          if [ -z "$VERSION" ]; then
+            echo "Error: Could not extract Core.VERSION from Scripts/core.lua" >&2
+            exit 1
+          fi
+          TAG="v${VERSION}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          if git rev-parse -q --verify "refs/tags/${TAG}" >/dev/null; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "Tag ${TAG} already exists; skipping release creation."
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Generate Conventional Commits changelog
+        id: changelog
+        if: steps.version.outputs.exists == 'false'
+        uses: orhun/git-cliff-action@a9a95522b26fe6403f7bb24031f21fb573d0f5ff # v4
+        with:
+          config: cliff.toml
+          args: --unreleased --tag ${{ steps.version.outputs.tag }} --strip all
+        env:
+          OUTPUT: CHANGELOG_RELEASE.md
+
+      - name: Package mod zip and manifest.txt
+        if: steps.version.outputs.exists == 'false'
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          ZIP_NAME="Elvenides-Station-Map-v${VERSION}.zip"
+          STAGE="dist/Mods/MainSequenceStationMap"
+          mkdir -p "${STAGE}"
+          cp -r Scripts "${STAGE}/Scripts"
+          cp README.md "${STAGE}/README.txt"
+          cp LICENSE "${STAGE}/LICENSE.txt"
+          touch "${STAGE}/enabled.txt"
+          cat > "${STAGE}/mscore.mod" <<EOF
+          name=Elvenide's Station Map
+          repo=${{ github.repository }}
+          version=${VERSION}
+          EOF
+          (cd dist && zip -r "../${ZIP_NAME}" Mods)
+
+          SHA256=$(sha256sum "${ZIP_NAME}" | awk '{print $1}')
+          SIZE=$(stat -c%s "${ZIP_NAME}")
+          cat > manifest.txt <<EOF
+          name=Elvenide's Station Map
+          version=${VERSION}
+          zip=${ZIP_NAME}
+          sha256=${SHA256}
+          size=${SIZE}
+          EOF
+
+          ls -lh "${ZIP_NAME}" manifest.txt
+          cat manifest.txt
+
+      - name: Build GitHub Release notes
+        if: steps.version.outputs.exists == 'false'
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          {
+            echo "## Elvenide's Station Map v${VERSION}"
+            echo ""
+            echo "📖 **[Getting Started & Installation Guide](https://github.com/${{ github.repository }}/blob/main/docs/get-started.md)** (supports [MSCoreManager](https://github.com/xxalex3xx97/MSCore/releases/latest) and manual UE4SS installation)"
+            echo ""
+            echo "<details>"
+            echo "<summary><strong>What's Changed</strong></summary>"
+            echo ""
+            if [ -s CHANGELOG_RELEASE.md ]; then
+              cat CHANGELOG_RELEASE.md
+            else
+              echo "- Initial standalone release."
+            fi
+            echo ""
+            echo "</details>"
+          } > RELEASE_NOTES.md
+
+      - name: Create GitHub Release
+        if: steps.version.outputs.exists == 'false'
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: Elvenide's Station Map v${{ steps.version.outputs.version }}
+          body_path: RELEASE_NOTES.md
+          files: |
+            manifest.txt
+            Elvenides-Station-Map-v${{ steps.version.outputs.version }}.zip
+          make_latest: true

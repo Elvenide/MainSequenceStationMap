@@ -1,0 +1,14 @@
+# Local user configuration (never commit user-specific keybinds/settings)
+config.json
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+
+# OS & editor files
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode/
+.idea/
