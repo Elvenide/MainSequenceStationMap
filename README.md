@@ -16,7 +16,7 @@ View your entire space station floor-by-floor in a fullscreen 2D map with native
 
 - Press **`N`** (default) while on foot in a space station to toggle the fullscreen **Station Map** (or press **`Escape`** / click the top-right **`X`** button to close it).
 - A **Station Map** keybind indicator also appears in the top-right HUD alongside **Power (`P`)** and **Logistics (`L`)** while on foot in a station, updating automatically if you rebind the key.
-- You can rebind this key in **Settings → Controls** under **Station Map** (stored in `MainSequenceStationMap/config.json` as `"StationMapKey"`).
+- You can rebind this key in **Settings → Controls** under **Station Map** (stored in `ElvenidesStationMap/config.json` as `"StationMapKey"`).
 
 ### Features
 

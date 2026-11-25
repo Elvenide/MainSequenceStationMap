@@ -24,7 +24,7 @@ Choose either **MSCoreManager** (recommended) or **Manual UE4SS Installation** b
    - Paste in `https://github.com/Elvenide/MainSequenceStationMap` to install automatically from GitHub Releases (MSCoreManager uses `manifest.txt` and **$(System.Collections.Hashtable.ZipBase)-v<version>.zip**).
    - *(Alternatively, if installing from a local archive in MSCoreManager, download **$(System.Collections.Hashtable.ZipBase)-v<version>.zip** from [github.com/Elvenide/MainSequenceStationMap/releases](https://github.com/Elvenide/MainSequenceStationMap/releases).)*
 3. **Launch Main Sequence**:
-   - **Elvenide's Station Map** will automatically create/update `MainSequenceStationMap\config.json` with default keybinds on first launch.
+   - **Elvenide's Station Map** will automatically create/update `ElvenidesStationMap\config.json` with default keybinds on first launch.
    - Open **Settings → Controls** at any time to rebind hotkeys.
 
 ### Option 2: Manual UE4SS Installation
@@ -44,24 +44,24 @@ Choose either **MSCoreManager** (recommended) or **Manual UE4SS Installation** b
      ```
 2. **Install Elvenide's Station Map**:
    - Download **$(System.Collections.Hashtable.ZipBase)-v<version>.zip** from [github.com/Elvenide/MainSequenceStationMap/releases](https://github.com/Elvenide/MainSequenceStationMap/releases).
-   - Open the zip, navigate into its `Mods\` folder, and copy the `MainSequenceStationMap` folder into:
+   - Open the zip, navigate into its `Mods\` folder, and copy the `ElvenidesStationMap` folder into:
      ```
-     Main Sequence\Windows\MainSequence\Binaries\Win64\ue4ss\Mods\MainSequenceStationMap\
+     Main Sequence\Windows\MainSequence\Binaries\Win64\ue4ss\Mods\ElvenidesStationMap\
      ```
-     *(You can safely leave `mscore.mod` inside `MainSequenceStationMap\`—UE4SS ignores it.)*
-   - Ensure `MainSequenceStationMap\enabled.txt` exists (an empty file is fine).
-   - Open `ue4ss\Mods\mods.txt` and add `MainSequenceStationMap : 1` **above** `Keybinds : 1`:
+     *(You can safely leave `mscore.mod` inside `ElvenidesStationMap\`—UE4SS ignores it.)*
+   - Ensure `ElvenidesStationMap\enabled.txt` exists (an empty file is fine).
+   - Open `ue4ss\Mods\mods.txt` and add `ElvenidesStationMap : 1` **above** `Keybinds : 1`:
      ```ini
-     MainSequenceStationMap : 1
+     ElvenidesStationMap : 1
 
      ; Built-in keybinds, do not move up!
      Keybinds : 1
      ```
 3. **Launch Main Sequence**:
-   - **Elvenide's Station Map** will automatically create/update `MainSequenceStationMap\config.json` with default keybinds on first launch.
+   - **Elvenide's Station Map** will automatically create/update `ElvenidesStationMap\config.json` with default keybinds on first launch.
    - Open **Settings → Controls** at any time to rebind hotkeys.
 
 ## Uninstalling
 
-- Remove or rename `MainSequenceStationMap\enabled.txt` (or delete the `MainSequenceStationMap` folder and remove `MainSequenceStationMap : 1` from `mods.txt`).
+- Remove or rename `ElvenidesStationMap\enabled.txt` (or delete the `ElvenidesStationMap` folder and remove `ElvenidesStationMap : 1` from `mods.txt`).
 - Your saves remain completely intact with no missing-mod dependencies.

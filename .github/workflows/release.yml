@@ -54,14 +54,14 @@ jobs:
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           ZIP_NAME="Elvenides-Station-Map-v${VERSION}.zip"
-          STAGE="dist/Mods/MainSequenceStationMap"
+          STAGE="dist/Mods/ElvenidesStationMap"
           mkdir -p "${STAGE}"
           cp -r Scripts "${STAGE}/Scripts"
           cp README.md "${STAGE}/README.txt"
           cp LICENSE "${STAGE}/LICENSE.txt"
           touch "${STAGE}/enabled.txt"
           cat > "${STAGE}/mscore.mod" <<EOF
-          name=Elvenide's Station Map
+          name=ElvenidesStationMap
           repo=${{ github.repository }}
           version=${VERSION}
           EOF
@@ -70,7 +70,7 @@ jobs:
           SHA256=$(sha256sum "${ZIP_NAME}" | awk '{print $1}')
           SIZE=$(stat -c%s "${ZIP_NAME}")
           cat > manifest.txt <<EOF
-          name=Elvenide's Station Map
+          name=ElvenidesStationMap
           version=${VERSION}
           zip=${ZIP_NAME}
           sha256=${SHA256}
