@@ -7849,6 +7849,18 @@ end
 -- Feature Lifecycle
 --------------------------------------------------------------------------------
 
+Perf.HudIndicator = require("hud_key_indicator").Create({
+    Kind       = "StationMap",
+    ConfigKey  = "StationMapKey",
+    DefaultKey = "N",
+})
+
+Feature.WatchWidgets = {
+    WBP_CharacterHUD_C = function(hud)
+        Perf.HudIndicator.EnsureForHud(hud)
+    end,
+}
+
 function Feature.Init()
     LastWorldAddr = GetCurrentWorldAddr()
     Core.RegisterConfigurableKeybind({
@@ -7857,6 +7869,9 @@ function Feature.Init()
         MappingName = "Eqol_StationMap",
         Label       = "Station Map",
         OnPress     = ToggleStationMap,
+        OnChanged   = function()
+            Perf.HudIndicator.UpdateKeyText()
+        end,
         CanTrigger  = function()
             return IsMapOpen() or nil
         end,
@@ -7880,6 +7895,7 @@ function Feature.RegisterHooks()
             end
         end
     )
+    Perf.HudIndicator.RegisterHooks()
 end
 
 function Feature.OnToggle(enabled)
